@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="image.png" alt="TypeSpeed Pro Logo" width="200">
+  <img src="image.png" alt="TypeSpeed Pro Logo" width="600">
 </div>
 TypeSpeed Pro ⌨️
 TypeSpeed Pro is a high-performance, minimalist typing assessment tool designed for developers and touch-typing enthusiasts. It provides real-time feedback on typing speed and accuracy while challenging users with a unique "Blind Mode" to master muscle memory.
