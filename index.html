@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeSpeed Pro - Test Your Typi
+        
+        
+        
+        ng Speed</title>
+    <meta name="description" content="Improve your typing speed and accuracy with TypeSpeed Pro. Real-time WPM calculation, accuracy tracking, and a challenging Blind Mode.">
+    <meta name="author" content="TypeSpeed Pro">
+    <meta name="keywords" content="typing test, typing speed, WPM, words per minute, blind typing, typing practice, keyboard skills">
+    
+    <meta property="og:title" content="TypeSpeed Pro - Professional Typing Speed Test">
+    <meta property="og:description" content="Test and improve your typing speed with real-time feedback, accuracy tracking, and professional statistics.">
+    <meta property="og:type" content="website">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TypeSpeed Pro - Test Your Typing Speed">
+    <meta name="twitter:description" content="Professional typing speed test with real-time WPM tracking and accuracy measurement.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS Variables - Dark theme optimized for focus */
+        :root {
+            --background: 220 13% 9%;
+            --foreground: 220 9% 86%;
+            --card: 220 13% 11%;
+            --card-foreground: 220 9% 86%;
+            --primary: 142 76% 36%;
+            --primary-foreground: 220 13% 9%;
+            --secondary: 220 13% 15%;
+            --secondary-foreground: 220 9% 86%;
+            --muted: 220 13% 15%;
+            --muted-foreground: 220 9% 46%;
+            --accent: 262 83% 58%;
+            --accent-foreground: 220 13% 9%;
+            --destructive: 0 84% 60%;
+            --destructive-foreground: 220 9% 86%;
+            --border: 220 13% 20%;
+            --input: 220 13% 15%;
+            --ring: 142 76% 36%;
+            --radius: 0.75rem;
+            --typing-correct: 142 76% 36%;
+            --typing-incorrect: 0 84% 60%;
+            --typing-current: 45 93% 47%;
+            --typing-pending: 220 9% 46%;
+            --typing-bg: 220 13% 9%;
+            --typing-text-bg: 220 13% 11%;
+            --gradient-primary: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 46%));
+            --gradient-accent: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 83% 68%));
+            --gradient-subtle: linear-gradient(180deg, hsl(220 13% 11%), hsl(220 13% 9%));
+            --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+            font-family: var(--font-mono);
+            line-height: 1.6;
+        }
+
+        .container {
+            min-height: 100vh;
+            padding: 1rem;
+            position: relative; /* Needed for positioning session stats */
+        }
+
+        .max-w-6xl {
+            max-width: 72rem;
+            margin: 0 auto;
+        }
+
+        /* Session Stats */
+        .session-stats {
+            position: absolute;
+            top: 6.2rem;
+            right: 14.5rem;
+            text-align: right;
+            font-size: 1.1rem; /* Increased font size */
+            color: hsl(var(--muted-foreground));
+            z-index: 10;
+        }
+        .session-stat-item {
+            margin-bottom: 0.25rem; /* Added spacing between items */
+        }
+        .session-stat-item .label {
+            margin-right: 0.5rem;
+        }
+        .session-stat-item .value {
+            font-weight: 700;
+            color: hsl(var(--foreground));
+        }
+        @media (max-width: 768px) {
+            .session-stats {
+                position: static;
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative; /* Needed for logo positioning */
+            display: flex; /* To align logo and title */
+            align-items: center; /* Vertically align */
+            justify-content: center; /* Center the title horizontally */
+        }
+
+        .logo {
+            position: absolute;
+            left: 0; /* Positioned to the left */
+            top: 50%; /* Vertically center */
+            transform: translateY(-50%); /* Adjust for exact vertical centering */
+            height: 205px; /* Adjust size as needed */
+            width: auto;
+            margin-left: 15px;
+            margin-top: 70px; /* Spacing from the left edge */
+        }
+
+        .header h1 {
+            font-size: 2.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            /* Adjust margin-top to account for the logo if needed, or flex handles it */
+        }
+
+        .header p {
+            color: hsl(var(--muted-foreground));
+            position: relative; /* To keep it below the h1 */
+            top: 1.5rem; /* Adjust if needed to move it below the main title more */
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                position: static; /* Stack on smaller screens */
+                margin: 0 auto 1rem auto; /* Center and add spacing */
+                transform: none;
+                height: 50px; /* Smaller logo for mobile */
+            }
+            .header {
+                flex-direction: column; /* Stack header elements */
+            }
+            .header p {
+                top: 0; /* Reset top positioning for mobile */
+            }
+        }
+
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            cursor: pointer;
+            border: none;
+            height: 2.5rem;
+            padding: 0 1rem;
+            margin: 0 0.5rem;
+        }
+
+        .btn:focus-visible {
+            outline: 2px solid hsl(var(--ring));
+            outline-offset: 2px;
+        }
+
+        .btn:disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .btn-default {
+            background: var(--gradient-primary);
+            color: hsl(var(--primary-foreground));
+        }
+
+        .btn-default:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px hsl(var(--primary) / 0.3);
+        }
+
+        .btn-outline {
+            border: 1px solid hsl(var(--border));
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+        }
+
+        .btn-outline:hover:not(:disabled) {
+            background: hsl(var(--accent));
+            color: hsl(var(--accent-foreground));
+        }
+
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: hsl(var(--accent-foreground));
+        }
+
+        .btn-accent:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px hsl(var(--accent) / 0.3);
+        }
+
+        /* Time Selection & Options */
+        .options-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .time-selection {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .blind-mode-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: hsl(var(--muted-foreground));
+        }
+        .blind-mode-toggle input {
+            cursor: pointer;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        @media (min-width: 768px) {
+            .md\:grid-cols-4 {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        /* Cards */
+        .card {
+            border-radius: var(--radius);
+            border: 1px solid hsl(var(--border));
+            background: var(--gradient-subtle);
+            color: hsl(var(--card-foreground));
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: var(--transition-smooth);
+        }
+
+        .card:hover {
+            border-color: hsl(var(--primary) / 0.5);
+            transform: translateY(-2px);
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        /* Timer */
+        .timer {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .timer-value {
+            font-size: 3.75rem;
+            font-weight: bold;
+            color: hsl(var(--typing-current));
+            margin-bottom: 0.5rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 9999px;
+            border: 1px solid transparent;
+            padding: 0.125rem 0.625rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: var(--transition-fast);
+        }
+
+        .badge-default {
+            border-color: transparent;
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+        }
+
+        .badge-secondary {
+            border-color: transparent;
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+        }
+
+        /* Typing Area */
+        .typing-area {
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .typing-text {
+            font-size: 1.125rem;
+            line-height: 1.75;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-mono);
+            user-select: none;
+        }
+
+        .typing-char {
+            transition: var(--transition-fast);
+            position: relative;
+        }
+
+        .typing-char-correct {
+            color: hsl(var(--typing-correct));
+        }
+
+        .typing-char-incorrect {
+            color: hsl(var(--typing-incorrect));
+            background-color: hsl(var(--typing-incorrect) / 0.3);
+            border-radius: 2px;
+        }
+
+        .typing-char-current {
+            background-color: hsl(var(--typing-current));
+            color: hsl(var(--typing-bg));
+            animation: cursor-blink 1s infinite;
+            border-radius: 2px;
+        }
+
+        .typing-char-pending {
+            color: hsl(var(--typing-pending));
+        }
+
+        @keyframes cursor-blink {
+            0%, 50% {
+                background-color: hsl(var(--typing-current));
+                color: hsl(var(--typing-bg));
+            }
+            51%, 100% {
+                background-color: transparent;
+                color: hsl(var(--typing-current));
+            }
+        }
+
+        /* Input */
+        .typing-input {
+            width: 100%;
+            padding: 1rem;
+            background-color: hsl(var(--input));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            font-size: 1.125rem;
+            font-family: var(--font-mono);
+            color: hsl(var(--foreground));
+            transition: var(--transition-fast);
+        }
+
+        .typing-input:focus {
+            outline: none;
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+
+        .typing-input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        /* Results */
+        .results {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .results h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .results-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+        }
+
+        .result-value {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .result-label {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+        }
+
+        /* Color classes */
+        .text-primary { color: hsl(var(--primary)); }
+        .text-accent { color: hsl(var(--accent)); }
+        .text-typing-correct { color: hsl(var(--typing-correct)); }
+        .text-typing-incorrect { color: hsl(var(--typing-incorrect)); }
+        .text-typing-current { color: hsl(var(--typing-current)); }
+
+        /* Utility classes */
+        .hidden { display: none; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mt-8 { margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="max-w-6xl">
+            <div class="session-stats">
+                <div class="session-stat-item">
+                    <span class="label">Highest WPM:</span>
+                    <span class="value" id="session-wpm-high">0</span>
+                </div>
+                <div class="session-stat-item">
+                    <span class="label">Highest Acc:</span>
+                    <span class="value" id="session-accuracy-high">0%</span>
+                </div>
+            </div>
+            <header class="header">
+                <img src="images\image.png" alt="TypeSpeed Pro Logo" class="logo">
+                <div>
+                    <h1>TypeSpeed Pro</h1>
+                    <p>Test your typing speed and accuracy with real-time feedback</p>
+                </div>
+            </header>
+
+            <div class="options-container">
+                <div class="time-selection">
+                    <button class="btn btn-outline" onclick="startTest(30)" id="time-30">30s</button>
+                    <button class="btn btn-outline" onclick="startTest(60)" id="time-60">60s</button>
+                    <button class="btn btn-outline" onclick="startTest(120)" id="time-120">120s</button>
+                </div>
+                <label class="blind-mode-toggle">
+                    <input type="checkbox" id="blind-mode-toggle">
+                    Enable Blind Typing Mode 🙈
+                </label>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 mb-8">
+                <div class="card stat-card">
+                    <div class="card-content">
+                        <div class="stat-value text-primary" id="wpm-stat">0</div>
+                        <div class="stat-label">WPM</div>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="card-content">
+                        <div class="stat-value text-accent" id="accuracy-stat">100%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="card-content">
+                        <div class="stat-value text-typing-correct" id="correct-stat">0</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="card-content">
+                        <div class="stat-value text-typing-incorrect" id="errors-stat">0</div>
+                        <div class="stat-label">Errors</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timer">
+                <div class="timer-value" id="timer-display">60</div>
+                <span class="badge badge-secondary" id="status-badge">Ready</span>
+            </div>
+
+            <div class="card typing-area">
+                <div class="typing-text" id="typing-text"></div>
+                <input 
+                    type="text" 
+                    class="typing-input" 
+                    id="typing-input" 
+                    placeholder="Click a time option to begin"
+                    disabled
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-outline" onclick="resetTest()">Reset</button>
+                <button class="btn btn-accent" onclick="newTest()" id="new-test-btn" disabled>New Test</button>
+            </div>
+
+            <div class="card results hidden" id="results">
+                <div class="card-content">
+                    <h2>Test Complete!</h2>
+                    <div class="results-grid">
+                        <div>
+                            <div class="result-value text-primary" id="final-wpm">0</div>
+                            <div class="result-label">Words per minute</div>
+                        </div>
+                        <div>
+                            <div class="result-value text-accent" id="final-accuracy">100%</div>
+                            <div class="result-label">Accuracy</div>
+                        </div>
+                        <div>
+                            <div class="result-value text-typing-correct" id="final-correct">0</div>
+                            <div class="result-label">Correct characters</div>
+                        </div>
+                        <div>
+                            <div class="result-value text-typing-incorrect" id="final-errors">0</div>
+                            <div class="result-label">Errors</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample texts for typing practice
+        const SAMPLE_TEXTS = [
+            "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the English alphabet at least once, making it perfect for typing practice.",
+            "In the heart of the ancient forest, where sunlight danced through emerald leaves, a gentle stream whispered secrets to the moss-covered stones along its winding path.",
+            "Technology has revolutionized the way we communicate, work, and live. From smartphones to artificial intelligence, innovation continues to shape our future in remarkable ways.",
+            "The art of cooking is both science and creativity combined. Understanding ingredients, temperatures, and timing allows chefs to create masterpieces that delight all senses.",
+            "Mountains stand as silent witnesses to the passage of time, their peaks reaching toward the sky while their roots remain firmly anchored in the earth below."
+        ];
+
+        // Global state
+        let typingState = {
+            text: '',
+            userInput: '',
+            currentIndex: 0,
+            isActive: false,
+            isComplete: false,
+            startTime: null,
+            timeLeft: 60,
+            duration: 60,
+            timer: null,
+            blindMode: false // State for blind mode
+        };
+
+        let stats = {
+            wpm: 0,
+            accuracy: 0,
+            correct: 0,
+            incorrect: 0,
+            total: 0
+        };
+
+        // Session state
+        let sessionHighestWPM = 0;
+        let sessionHighestAccuracy = 0;
+
+        // DOM elements
+        const typingText = document.getElementById('typing-text');
+        const typingInput = document.getElementById('typing-input');
+        const timerDisplay = document.getElementById('timer-display');
+        const statusBadge = document.getElementById('status-badge');
+        const wpmStat = document.getElementById('wpm-stat');
+        const accuracyStat = document.getElementById('accuracy-stat');
+        const correctStat = document.getElementById('correct-stat');
+        const errorsStat = document.getElementById('errors-stat');
+        const results = document.getElementById('results');
+        const newTestBtn = document.getElementById('new-test-btn');
+        const blindModeToggle = document.getElementById('blind-mode-toggle');
+        
+        // Session DOM elements
+        const sessionWpmHigh = document.getElementById('session-wpm-high');
+        const sessionAccuracyHigh = document.getElementById('session-accuracy-high');
+
+        // Calculate typing statistics
+        function calculateStats(input, text, timeElapsed) {
+            let correct = 0;
+            let incorrect = 0;
+            
+            const relevantInput = input.substring(0, text.length);
+
+            for (let i = 0; i < relevantInput.length; i++) {
+                if (relevantInput[i] === text[i]) {
+                    correct++;
+                } else {
+                    incorrect++;
+                }
+            }
+
+            const total = relevantInput.length;
+            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 100;
+            const minutes = timeElapsed / 60;
+            const wordsTyped = (correct / 5);
+            const wpm = minutes > 0 ? Math.round(wordsTyped / minutes) : 0;
+
+            return { wpm, accuracy, correct, incorrect, total };
+        }
+
+        // Update display statistics
+        function updateStats() {
+            wpmStat.textContent = stats.wpm;
+            accuracyStat.textContent = stats.accuracy + '%';
+            correctStat.textContent = stats.correct;
+            errorsStat.textContent = stats.incorrect;
+        }
+
+        // Update session stats display
+        function updateSessionStatsDisplay() {
+            sessionWpmHigh.textContent = sessionHighestWPM;
+            sessionAccuracyHigh.textContent = sessionHighestAccuracy + '%';
+        }
+
+        // Render typing text with character highlighting
+        function renderText() {
+            const textArray = typingState.text.split('');
+            
+            if (typingState.blindMode && typingState.isActive) {
+                const renderedText = textArray.map((char, index) => {
+                    let className = 'typing-char ';
+                    if (index === typingState.currentIndex) {
+                        className += 'typing-char-current';
+                    } else {
+                        className += 'typing-char-pending';
+                    }
+                    return `<span class="${className}">${char}</span>`;
+                }).join('');
+                typingText.innerHTML = renderedText;
+                return;
+            }
+
+            const renderedText = textArray.map((char, index) => {
+                let className = 'typing-char ';
+                
+                if (index < typingState.userInput.length) {
+                    if (typingState.userInput[index] === char) {
+                        className += 'typing-char-correct';
+                    } else {
+                        className += 'typing-char-incorrect';
+                    }
+                } else if (index === typingState.currentIndex) {
+                    className += 'typing-char-current';
+                } else {
+                    className += 'typing-char-pending';
+                }
+
+                return `<span class="${className}">${char}</span>`;
+            }).join('');
+
+            typingText.innerHTML = renderedText;
+        }
+
+        // Start typing test
+        function startTest(duration) {
+            document.querySelectorAll('.time-selection .btn').forEach(btn => {
+                btn.classList.remove('btn-default');
+                btn.classList.add('btn-outline');
+            });
+            document.getElementById(`time-${duration}`).classList.add('btn-default');
+
+            const isBlindMode = blindModeToggle.checked;
+
+            const randomText = SAMPLE_TEXTS[Math.floor(Math.random() * SAMPLE_TEXTS.length)];
+            typingState = {
+                text: randomText,
+                userInput: '',
+                currentIndex: 0,
+                isActive: true,
+                isComplete: false,
+                startTime: Date.now(),
+                timeLeft: duration,
+                duration: duration,
+                timer: null,
+                blindMode: isBlindMode
+            };
+
+            stats = { wpm: 0, accuracy: 100, correct: 0, incorrect: 0, total: 0 };
+
+            typingInput.disabled = false;
+            typingInput.placeholder = "Start typing...";
+            typingInput.value = '';
+            
+            const foregroundColor = 'hsl(var(--foreground))';
+            typingInput.style.color = isBlindMode ? 'transparent' : foregroundColor;
+            typingInput.style.caretColor = isBlindMode ? 'transparent' : foregroundColor;
+
+            typingInput.focus();
+            
+            timerDisplay.textContent = duration;
+            statusBadge.textContent = "Active";
+            statusBadge.classList.remove('badge-secondary');
+            statusBadge.classList.add('badge-default');
+            newTestBtn.disabled = true;
+            results.classList.add('hidden');
+
+            renderText();
+            updateStats();
+            startTimer();
+
+            document.querySelectorAll('.time-selection .btn').forEach(btn => btn.disabled = true);
+            blindModeToggle.disabled = true;
+        }
+
+        // Start countdown timer
+        function startTimer() {
+            typingState.timer = setInterval(() => {
+                typingState.timeLeft--;
+                timerDisplay.textContent = typingState.timeLeft;
+
+                if (typingState.startTime) {
+                    const timeElapsed = (Date.now() - typingState.startTime) / 1000;
+                    stats = calculateStats(typingState.userInput, typingState.text, timeElapsed);
+                    updateStats();
+                }
+
+                if (typingState.timeLeft <= 0) {
+                    completeTest();
+                }
+            }, 1000);
+        }
+
+        // Complete the typing test
+        function completeTest() {
+            typingState.isActive = false;
+            typingState.isComplete = true;
+
+            if (typingState.timer) {
+                clearInterval(typingState.timer);
+            }
+
+            const timeElapsed = typingState.duration;
+            stats = calculateStats(typingState.userInput, typingState.text, timeElapsed);
+            updateStats();
+
+            // Update session highest stats
+            if (stats.wpm > sessionHighestWPM) {
+                sessionHighestWPM = stats.wpm;
+            }
+            if (stats.accuracy > sessionHighestAccuracy) {
+                sessionHighestAccuracy = stats.accuracy;
+            }
+            updateSessionStatsDisplay();
+
+            typingInput.disabled = true;
+            statusBadge.textContent = "Complete";
+            statusBadge.classList.remove('badge-default');
+            statusBadge.classList.add('badge-secondary');
+            newTestBtn.disabled = false;
+
+            document.querySelectorAll('.time-selection .btn').forEach(btn => btn.disabled = false);
+            blindModeToggle.disabled = false;
+            
+            typingState.blindMode = false;
+            renderText();
+
+            document.getElementById('final-wpm').textContent = stats.wpm;
+            document.getElementById('final-accuracy').textContent = stats.accuracy + '%';
+            document.getElementById('final-correct').textContent = stats.correct;
+            document.getElementById('final-errors').textContent = stats.incorrect;
+            results.classList.remove('hidden');
+        }
+
+        // Reset typing test
+        function resetTest() {
+            if (typingState.timer) {
+                clearInterval(typingState.timer);
+            }
+
+            typingState.userInput = '';
+            typingState.currentIndex = 0;
+            typingState.isActive = false;
+            typingState.isComplete = false;
+            typingState.startTime = null;
+            typingState.timeLeft = typingState.duration;
+            typingState.blindMode = false;
+
+            stats = { wpm: 0, accuracy: 100, correct: 0, incorrect: 0, total: 0 };
+
+            typingInput.value = '';
+            typingInput.disabled = true;
+            typingInput.placeholder = "Click a time option to begin";
+            
+            const foregroundColor = 'hsl(var(--foreground))';
+            typingInput.style.color = foregroundColor;
+            typingInput.style.caretColor = foregroundColor;
+
+            timerDisplay.textContent = typingState.duration;
+            statusBadge.textContent = "Ready";
+            statusBadge.classList.remove('badge-default');
+            statusBadge.classList.add('badge-secondary');
+            newTestBtn.disabled = true;
+            results.classList.add('hidden');
+
+            document.querySelectorAll('.time-selection .btn').forEach(btn => btn.disabled = false);
+            blindModeToggle.disabled = false;
+            blindModeToggle.checked = false;
+
+            renderText();
+            updateStats();
+        }
+
+        // Start new test with same duration
+        function newTest() {
+            startTest(typingState.duration);
+        }
+
+        // Handle typing input
+        function handleInput(e) {
+            if (!typingState.isActive || typingState.isComplete) return;
+
+            typingState.userInput = e.target.value;
+            typingState.currentIndex = typingState.userInput.length;
+            
+            renderText();
+
+            if (typingState.userInput.length >= typingState.text.length) {
+                completeTest();
+            }
+        }
+
+        // Event listeners
+        typingInput.addEventListener('input', handleInput);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            typingState.text = SAMPLE_TEXTS[0];
+            renderText();
+            updateStats();
+            updateSessionStatsDisplay(); // Initialize session stats display
+        });
+
+        // Prevent context menu on typing text
+        typingText.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Focus input when clicking on typing area
+        document.querySelector('.typing-area').addEventListener('click', function() {
+            if (!typingInput.disabled) {
+                typingInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
